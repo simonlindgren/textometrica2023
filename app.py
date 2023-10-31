@@ -70,7 +70,7 @@ def page_2():
         language = st.selectbox("Select NLTK stopword language:", available_languages, index=available_languages.index('english'))
         additional_stopwords = st.text_input("Enter additional stopwords (space-separated):")
         additional_stopwords_list = additional_stopwords.split()
-        stop_words = set(stopwords.words(language)).union(additional_stopwords_list)
+        stop_words = list(set(stopwords.words(language)).union(additional_stopwords_list))
         st.session_state.stopwords = stop_words
         progress = st.progress(0)
         st.markdown("Clicking the button below will:")
