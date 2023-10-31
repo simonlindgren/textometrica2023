@@ -1,0 +1,408 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2023-10-31">
+    <creator>NetworkX 2.7.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <attributes mode="static" class="edge">
+      <attribute id="1" title="width" type="long" />
+    </attributes>
+    <attributes mode="static" class="node">
+      <attribute id="0" title="size" type="long" />
+    </attributes>
+    <nodes>
+      <node id="bourgeois" label="bourgeois">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="bourgeoisie" label="bourgeoisie">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="class" label="class">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="conditions" label="conditions">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="modern" label="modern">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="political" label="political">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="production" label="production">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="proletariat" label="proletariat">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="property" label="property">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="social" label="social">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="socialism" label="socialism">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+      <node id="society" label="society">
+        <attvalues>
+          <attvalue for="0" value="10" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="bourgeois" target="bourgeoisie" id="0">
+        <attvalues>
+          <attvalue for="1" value="17" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="class" id="1">
+        <attvalues>
+          <attvalue for="1" value="23" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="conditions" id="2">
+        <attvalues>
+          <attvalue for="1" value="17" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="modern" id="3">
+        <attvalues>
+          <attvalue for="1" value="17" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="political" id="4">
+        <attvalues>
+          <attvalue for="1" value="7" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="production" id="5">
+        <attvalues>
+          <attvalue for="1" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="proletariat" id="6">
+        <attvalues>
+          <attvalue for="1" value="16" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="property" id="7">
+        <attvalues>
+          <attvalue for="1" value="12" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="social" id="8">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="socialism" id="9">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeois" target="society" id="10">
+        <attvalues>
+          <attvalue for="1" value="18" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="class" id="11">
+        <attvalues>
+          <attvalue for="1" value="25" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="conditions" id="12">
+        <attvalues>
+          <attvalue for="1" value="13" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="modern" id="13">
+        <attvalues>
+          <attvalue for="1" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="political" id="14">
+        <attvalues>
+          <attvalue for="1" value="11" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="production" id="15">
+        <attvalues>
+          <attvalue for="1" value="13" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="proletariat" id="16">
+        <attvalues>
+          <attvalue for="1" value="21" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="property" id="17">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="social" id="18">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="socialism" id="19">
+        <attvalues>
+          <attvalue for="1" value="5" />
+        </attvalues>
+      </edge>
+      <edge source="bourgeoisie" target="society" id="20">
+        <attvalues>
+          <attvalue for="1" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="conditions" id="21">
+        <attvalues>
+          <attvalue for="1" value="13" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="modern" id="22">
+        <attvalues>
+          <attvalue for="1" value="19" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="political" id="23">
+        <attvalues>
+          <attvalue for="1" value="16" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="production" id="24">
+        <attvalues>
+          <attvalue for="1" value="14" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="proletariat" id="25">
+        <attvalues>
+          <attvalue for="1" value="26" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="property" id="26">
+        <attvalues>
+          <attvalue for="1" value="7" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="social" id="27">
+        <attvalues>
+          <attvalue for="1" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="socialism" id="28">
+        <attvalues>
+          <attvalue for="1" value="7" />
+        </attvalues>
+      </edge>
+      <edge source="class" target="society" id="29">
+        <attvalues>
+          <attvalue for="1" value="19" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="modern" id="30">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="political" id="31">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="production" id="32">
+        <attvalues>
+          <attvalue for="1" value="11" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="proletariat" id="33">
+        <attvalues>
+          <attvalue for="1" value="14" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="property" id="34">
+        <attvalues>
+          <attvalue for="1" value="7" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="social" id="35">
+        <attvalues>
+          <attvalue for="1" value="12" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="socialism" id="36">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="conditions" target="society" id="37">
+        <attvalues>
+          <attvalue for="1" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="political" id="38">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="production" id="39">
+        <attvalues>
+          <attvalue for="1" value="8" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="proletariat" id="40">
+        <attvalues>
+          <attvalue for="1" value="12" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="property" id="41">
+        <attvalues>
+          <attvalue for="1" value="5" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="social" id="42">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="socialism" id="43">
+        <attvalues>
+          <attvalue for="1" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="modern" target="society" id="44">
+        <attvalues>
+          <attvalue for="1" value="11" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="production" id="45">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="proletariat" id="46">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="property" id="47">
+        <attvalues>
+          <attvalue for="1" value="1" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="social" id="48">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="socialism" id="49">
+        <attvalues>
+          <attvalue for="1" value="3" />
+        </attvalues>
+      </edge>
+      <edge source="political" target="society" id="50">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="production" target="proletariat" id="51">
+        <attvalues>
+          <attvalue for="1" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="production" target="property" id="52">
+        <attvalues>
+          <attvalue for="1" value="9" />
+        </attvalues>
+      </edge>
+      <edge source="production" target="social" id="53">
+        <attvalues>
+          <attvalue for="1" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="production" target="socialism" id="54">
+        <attvalues>
+          <attvalue for="1" value="3" />
+        </attvalues>
+      </edge>
+      <edge source="production" target="society" id="55">
+        <attvalues>
+          <attvalue for="1" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="proletariat" target="property" id="56">
+        <attvalues>
+          <attvalue for="1" value="1" />
+        </attvalues>
+      </edge>
+      <edge source="proletariat" target="social" id="57">
+        <attvalues>
+          <attvalue for="1" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="proletariat" target="socialism" id="58">
+        <attvalues>
+          <attvalue for="1" value="5" />
+        </attvalues>
+      </edge>
+      <edge source="proletariat" target="society" id="59">
+        <attvalues>
+          <attvalue for="1" value="13" />
+        </attvalues>
+      </edge>
+      <edge source="property" target="social" id="60">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="property" target="socialism" id="61">
+        <attvalues>
+          <attvalue for="1" value="2" />
+        </attvalues>
+      </edge>
+      <edge source="property" target="society" id="62">
+        <attvalues>
+          <attvalue for="1" value="7" />
+        </attvalues>
+      </edge>
+      <edge source="social" target="socialism" id="63">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+      <edge source="social" target="society" id="64">
+        <attvalues>
+          <attvalue for="1" value="14" />
+        </attvalues>
+      </edge>
+      <edge source="socialism" target="society" id="65">
+        <attvalues>
+          <attvalue for="1" value="4" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
