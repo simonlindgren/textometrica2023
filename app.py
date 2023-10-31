@@ -2,7 +2,6 @@ import streamlit as st
 import zipfile
 import os
 import shutil
-from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
 import pandas as pd
 import numpy as np
@@ -11,8 +10,10 @@ import string
 from itertools import combinations
 import networkx as nx
 from pyvis.network import Network
-nltk.download('stopwords')
 
+import nltk
+nltk.download('stopwords')
+from nltk.corpus import stopwords
 
 
 # Start page
