@@ -11,7 +11,7 @@ import string
 from itertools import combinations
 import networkx as nx
 from pyvis.network import Network
-nltk.download(‘stopwords’)
+nltk.download('stopwords')
 
 
 
