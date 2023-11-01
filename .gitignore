@@ -7,6 +7,10 @@ __pycache__/
 *.so
 *.gexf
 *.html
+*.csv
+
+# files
+wanted_words.txt
 
 # Distribution / packaging
 .Python

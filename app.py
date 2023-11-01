@@ -110,6 +110,7 @@ def page_3():
         st.dataframe(countsDF, height=300, width=400)
         default_threshold = round(len(st.session_state.countsDF) / 3)
         threshold = st.text_input("Cut at row number: (default value = keep the top third, 33%):", value=str(default_threshold))
+
         if st.button("Confirm threshold"):
             try:
                 threshold = int(threshold)
@@ -123,8 +124,20 @@ def page_3():
                     st.write(f"Please enter a number between 1 and {len(st.session_state.countsDF)}")
             except ValueError:
                 st.write("Please enter a valid integer")
+
+
+        st.markdown("***")
+        st.markdown("Instead of setting a threshold, you can also choose to just keep all words.")
+        if st.button("Keep all words"):
+            st.write("✅ Keeping all words.")
+            shortDF = countsDF
+            st.session_state.shortDF = shortDF
+            st.write("← You can now move on to *Select words*.")
+        
     else:
         st.write("Preprocessed data not available. Please run preprocessing.")
+
+
 
 def page_4():
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
@@ -132,9 +145,9 @@ def page_4():
         st.markdown("### Select words")
         st.markdown("Now, refine your selection of words by manually going through this list. Select the words you want to keep in the analysis, and deselect those that you are not interested in.")
         st.markdown("Use the 🔎 button to inspect a word in its context.")
-        st.markdown("❗️Click the 'Confirm selection' button when done.")
+        st.markdown("❗️Use 1, 2, or both below. Click the 'Confirm selection' button when done.")
         st.markdown("***")
-        
+
         tokenlist = list(st.session_state.shortDF.word)
 
         # Dictionary to hold the state of each checkbox and snippet display
@@ -143,11 +156,28 @@ def page_4():
         if "show_snippet" not in st.session_state:
             st.session_state.show_snippet = {word: False for word in tokenlist}
 
-        keeplist = []
-        snippet_length = 300  # Adjust for longer or shorter snippets
+        # Initialize keeplist in session state if not present
+        if 'keeplist' not in st.session_state:
+            st.session_state.keeplist = []
+
+        st.markdown("<span style='color: hotpink; font-size: 16pt'>1.</span>", unsafe_allow_html=True)
+        st.markdown("This function allows you to upload a *.txt file with one word per line, and then select all those words (if they exist in the list below) at the click of one button.")
+        uploaded_file = st.file_uploader("", type='txt')
+        if uploaded_file is not None:
+            words_to_select = [line.decode('utf-8').strip().lower() for line in uploaded_file.readlines()]
+            # Intersection with the existing tokenlist to only select words that exist
+            words_to_select = set(words_to_select).intersection(tokenlist)
+            if st.button("Select Uploaded Words"):
+                for word in words_to_select:
+                    st.session_state.checkbox_states[word] = True
+
+        st.markdown("***")
+        st.markdown("<span style='color: hotpink; font-size: 16pt'>2.</span>", unsafe_allow_html=True)
+        st.markdown("This function allows you to select individual words.")
+        
 
         # Create columns for layout
-        col1, col2, space1, space2, col3 = st.columns([1,1,1,1,2])
+        col1, col2, space1, space2, col4 = st.columns([2,2,1,1,2])
 
         if col1.button("Select All"):
             for w in tokenlist:
@@ -156,9 +186,10 @@ def page_4():
         if col2.button("Deselect All"):
             for w in tokenlist:
                 st.session_state.checkbox_states[w] = False
-        
-        if col3.button("Confirm selection"):
-            finalDF = st.session_state.shortDF[st.session_state.shortDF['word'].isin(keeplist)]
+
+        if col4.button("Confirm selection"):
+            # Create finalDF from the session_state.keeplist
+            finalDF = st.session_state.shortDF[st.session_state.shortDF['word'].isin(st.session_state.keeplist)]
             st.write(f"✅ Keeping {len(st.session_state.keeplist)} words.")
             st.write("← You can now move on to *Make concepts*.")
             st.write("***")
@@ -166,12 +197,17 @@ def page_4():
         for word in tokenlist:
             col1, col2 = st.columns(2)
             
+            # Update checkbox states based on session state
             is_checked = col1.checkbox(word, value=st.session_state.checkbox_states[word])
-            
             st.session_state.checkbox_states[word] = is_checked
-            if is_checked:
-                keeplist.append(word)
+
+            # Update keeplist in session state
+            if is_checked and word not in st.session_state.keeplist:
+                st.session_state.keeplist.append(word)
+            elif not is_checked and word in st.session_state.keeplist:
+                st.session_state.keeplist.remove(word)
             
+            # Code for displaying snippets if the 🔍 button is clicked
             if col2.button(f"🔍 {word}"):
                 st.session_state.show_snippet[word] = not st.session_state.show_snippet[word]
 
@@ -186,19 +222,21 @@ def page_4():
                         end = min(len(doc), start_index + len(word) + snippet_length)
                         snippet = doc[start:end]
 
-                        # highlight the word in purple
+                        # highlight the word in orange
                         snippet = re.sub(word_pattern, f"<span style='color: orange;'>{word}</span>", snippet)
 
                         # snippet box styling
                         with st.container():
                             st.markdown(f"<div style='padding: 10px; border: 1px solid gray; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
-            st.session_state.keeplist = keeplist
 
         st.markdown('<a name="bottom-of-page"></a>', unsafe_allow_html=True)
         st.markdown("[🔼 Back to the top. Remember to click 'Confirm selection'](#top-of-page)")
-        
+
     else:
-        st.write("Post-threshold data not available. Please set threshold.")  
+        st.write("Post-threshold data not available. Please set threshold.")
+
+
+
 
 
 
@@ -210,19 +248,74 @@ def page_5():
     # initialize word_categories in session state if it doesn't exist
     if 'word_categories' not in st.session_state:
         st.session_state.word_categories = {}
+    
+    
 
     if 'shortDF' in st.session_state and 'keeplist' in st.session_state:
         st.markdown("### Make concepts")
-        st.markdown("This step offers the opportunity for thematic coding:")
+        st.markdown("This step offers the opportunity for thematic coding.")
+        st.markdown("❗️ Use automatic or manual assigment (or a combination of the two). Click the 'Submit concepts' button when done.")
+        st.markdown("***")
+        st.markdown("<span style='color: hotpink; font-size: 16pt'>Automatic assignment</span>", unsafe_allow_html=True)
+        all_words = list(st.session_state.shortDF.word)
+        
+        all_words = list(st.session_state.shortDF.word)
+        with open('concepts.csv','w') as outfile:
+            outfile.write( 'WORD,CONCEPT\n' )
+            outfile.write(', \n'. join(all_words))
+            outfile.write(',')
+        st.markdown("Use the *csv template file below and fill out its second columns with concept names.")
+        with open("concepts.csv", 'rb') as f:
+            st.download_button(
+            label="Download *csv template",
+            data=f,
+            file_name=" concepts.csv"
+            )
+
+
+ 
+        st.markdown("*Note* that if you delete entire rows in the *.csv, those words will be excluded from the rest of the analysis.")
+        st.markdown("After preparing the file, upload it.")
+        
+        uploaded_file = st.file_uploader("", type='csv')
+        if uploaded_file is not None:
+            dfX = pd.read_csv(uploaded_file)
+            our_words = list(dfX.WORD)
+            st.session_state.keeplist = [word for word in st.session_state.keeplist if word in our_words]
+
+            # Button to automatically assign concepts from dfX
+            if st.button('Auto-assign concepts'):
+                # Update categories list with unique concepts from dfX
+                new_concepts = [concept for concept in dfX['CONCEPT'].unique() if pd.notnull(concept)]
+                st.session_state.categories.extend(new_concepts)
+                st.session_state.categories = list(set([w.strip() for w in st.session_state.categories]))
+                # Go through each row in dfX and update word_categories in session state
+                for _, row in dfX.iterrows():
+                    word = row['WORD'].strip()
+                    concept = row['CONCEPT'].strip()
+                    
+                    if pd.notnull(word) and pd.notnull(concept):
+                        # Update the word's category if the word is in keeplist
+                        if word in st.session_state.keeplist:
+                                if len(concept) > 1:
+                                    st.session_state.word_categories[word] = concept
+                                else:
+                                    st.session_state.word_categories[word] = "EMPTY"
+                st.markdown("✅ Concepts have been assigned below.")
+                st.markdown("❗️ Remember to click 'Submit concepts' when done.")
+        
+        st.markdown("***")
+        st.markdown("<span style='color: hotpink; font-size: 16pt'>Manual assignment</span>", unsafe_allow_html=True)
+        st.markdown("Use the list ow words below to do line-by-line concept assigment:")
         st.markdown("- Each word is initially set as a 'one-word' category. You can keep some — or all words — in that state.")
         st.markdown("- If you want to assign a word to a concept, e.g., <span style='color: hotpink; font-size: 18px'>sushi</span> to FOOD, enter FOOD in 'Add concept' and press Enter.", unsafe_allow_html = True)
         st.markdown("- Go through all words in this way. (a) Keep it as a one-word concept; (b) Add a new concept to connect it to; or, (c) Connect it to an already created concept, using the 'Conneced concept' dropdown menu.")
-
-        st.markdown("❗️ Click the 'Submit concepts' button when done.")
+     
 
         if st.button("Submit concepts"):
             st.write("✅ Concepts submitted!")
             st.write("← You can now *View co-occurrences*.")
+            st.write(st.session_state.word_categories)
         
         st.markdown("***")
 
@@ -298,7 +391,6 @@ def page_6():
         st.write("These are your co-occurring pairs. Select which ones you want to keep.")
         st.markdown("❗️ Click the 'Confirm selection' button when done.")
     
-        # Your existing code for processing co-occurrences...
         all_coocs = []
         words = list(st.session_state.word_categories.keys())
         words_set = set(words)
