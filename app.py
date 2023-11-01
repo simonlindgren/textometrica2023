@@ -215,6 +215,7 @@ def page_4():
                 word_pattern = re.compile(r'\b' + word + r'\b')  # Ensuring word boundaries
                 
                 for doc in st.session_state.corpus:
+                    snippet_length = 300
                     matches = [m.start() for m in word_pattern.finditer(doc)]
                     
                     for start_index in matches:
@@ -341,6 +342,7 @@ def page_5():
 
             # context button
             with col2:
+                snippet_length = 300
                 st.markdown("<p style='font-size: 14px; margin-bottom: 30px;'>View context</p>", unsafe_allow_html=True)
                 if col2.button(f"🔍 {word}"):
                     st.session_state.show_snippet[word] = not st.session_state.show_snippet[word]
