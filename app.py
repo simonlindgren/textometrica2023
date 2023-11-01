@@ -15,7 +15,6 @@ import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 
-
 # Start page
 def start_page():
     st.image('logo.png')
@@ -32,7 +31,6 @@ def start_page():
             file_name="cm.zip",
             mime="application/zip"
         )
-
 
 # Define all other pages
 def page_1(): 
@@ -60,9 +58,8 @@ def page_1():
         # Save corpus to session state
         st.session_state.corpus = corpus
 
-def page_2():
-    
- # Access corpus from session state
+def page_2(): 
+# Access corpus from session state
     if 'corpus' in st.session_state:
         st.markdown("### Preprocess")
         st.write("Number of documents in the corpus:", len(st.session_state.corpus))
@@ -102,8 +99,7 @@ def page_2():
     else:
         st.write("Corpus is not available. Please upload a zip file.")
 
-def page_3():
-    
+def page_3():  
     if 'countsDF' in st.session_state:
         st.markdown("### Set threshold")
         countsDF = st.session_state.countsDF
@@ -131,7 +127,6 @@ def page_3():
         st.write("Preprocessed data not available. Please run preprocessing.")
 
 def page_4():
-    
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     if 'shortDF' in st.session_state:
         st.markdown("### Select words")
@@ -151,44 +146,36 @@ def page_4():
         keeplist = []
         snippet_length = 300  # Adjust for longer or shorter snippets
 
-        # Create columns for layout. The 2 first columns will hold the buttons, while the outer columns take up the rest of the space.
+        # Create columns for layout
         col1, col2, space1, space2, col3 = st.columns([1,1,1,1,2])
 
-        # Place the "Select All" button in the first central column
         if col1.button("Select All"):
             for w in tokenlist:
                 st.session_state.checkbox_states[w] = True
-
-        # Place the "Deselect All" button in the second central column
+        
         if col2.button("Deselect All"):
             for w in tokenlist:
                 st.session_state.checkbox_states[w] = False
         
         if col3.button("Confirm selection"):
             finalDF = st.session_state.shortDF[st.session_state.shortDF['word'].isin(keeplist)]
-            #st.session_state.keeplist = keeplist
             st.write(f"✅ Keeping {len(st.session_state.keeplist)} words.")
             st.write("← You can now move on to *Make concepts*.")
             st.write("***")
 
         for word in tokenlist:
-            # Create columns for checkbox and button
             col1, col2 = st.columns(2)
             
-            # Place checkbox in the first column
             is_checked = col1.checkbox(word, value=st.session_state.checkbox_states[word])
             
-            # Update the state based on checkbox value
             st.session_state.checkbox_states[word] = is_checked
             if is_checked:
                 keeplist.append(word)
-
-            # Place button in the second column
+            
             if col2.button(f"🔍 {word}"):
                 st.session_state.show_snippet[word] = not st.session_state.show_snippet[word]
 
             if st.session_state.show_snippet[word]:
-                # Extract snippets from the corpus and display
                 word_pattern = re.compile(r'\b' + word + r'\b')  # Ensuring word boundaries
                 
                 for doc in st.session_state.corpus:
@@ -199,10 +186,10 @@ def page_4():
                         end = min(len(doc), start_index + len(word) + snippet_length)
                         snippet = doc[start:end]
 
-                        # Highlight the word in purple
-                        snippet = re.sub(word_pattern, f"<span style='color: purple;'>{word}</span>", snippet)
+                        # highlight the word in purple
+                        snippet = re.sub(word_pattern, f"<span style='color: orange;'>{word}</span>", snippet)
 
-                        # Using a container to style each snippet into a box
+                        # snippet box styling
                         with st.container():
                             st.markdown(f"<div style='padding: 10px; border: 1px solid gray; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
             st.session_state.keeplist = keeplist
@@ -218,10 +205,9 @@ def page_4():
 def page_5():
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     
-    
-    snippet_length = 300  # Adjust for longer or shorter snippets
+    snippet_length = 300
 
-    # Initialize word_categories in session state if it doesn't exist
+    # initialize word_categories in session state if it doesn't exist
     if 'word_categories' not in st.session_state:
         st.session_state.word_categories = {}
 
@@ -243,12 +229,11 @@ def page_5():
         if 'categories' not in st.session_state:
             st.session_state.categories = ["one-word"]
 
-        # Set default category for all words
+        # set default category for all words
         for word in st.session_state.keeplist:
             if word not in st.session_state.word_categories:
                 st.session_state.word_categories[word] = "one-word"
 
-        # Dictionary to hold the state of each checkbox and snippet display
         if "checkbox_states" not in st.session_state:
             st.session_state.checkbox_states = {word: False for word in st.session_state.keeplist}
         if "show_snippet" not in st.session_state:
@@ -256,28 +241,27 @@ def page_5():
 
 
         for word in st.session_state.keeplist:
-            # Create columns: rearranged the columns so that col2 (context button) is the rightmost and wider
             col1, col3, col4, col2 = st.columns([2, 2, 3, 4])
             
             with col1:
                 st.markdown(f"<div style='border: 0px solid; padding: 0px;'><span style='color: hotpink; font-size: 18px''>{word}</span></div>", unsafe_allow_html=True)
 
-            # Context button (now the rightmost column)
+            # context button
             with col2:
                 st.markdown("<p style='font-size: 14px; margin-bottom: 30px;'>View context</p>", unsafe_allow_html=True)
                 if col2.button(f"🔍 {word}"):
                     st.session_state.show_snippet[word] = not st.session_state.show_snippet[word]
                 if st.session_state.show_snippet[word]:
-                    word_pattern = re.compile(r'\b' + word + r'\b')  # Ensuring word boundaries
+                    word_pattern = re.compile(r'\b' + word + r'\b')  # ensuring word boundaries
                     for doc in st.session_state.corpus:
                         matches = [m.start() for m in word_pattern.finditer(doc)]
                         for start_index in matches:
                             start = max(0, start_index - snippet_length)
                             end = min(len(doc), start_index + len(word) + snippet_length)
                             snippet = doc[start:end]
-                            snippet = re.sub(word_pattern, f"<span style='color: purple;'>{word}</span>", snippet)
+                            snippet = re.sub(word_pattern, f"<span style='color: orange;'>{word}</span>", snippet)
                             with st.container():
-                                st.markdown(f"<div style='padding: 10px; border: 1px solid gray; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='padding: 10px; border: 1px solid red; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
 
             with col3:
                 st.markdown("<p style='font-size: 14px; margin-bottom: 1px;'>Add concept</p>", unsafe_allow_html=True)
@@ -307,24 +291,19 @@ def page_5():
     else:
         st.write("No selected words available. Please select words first.")
 
-
-
 def page_6():
-    
+    st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     if 'word_categories' in st.session_state:
         st.markdown("### View co-occurrences")
         st.write("These are your co-occurring pairs. Select which ones you want to keep.")
-        st.markdown("❗️ Click the 'Confirm selection' button at the [bottom of the page](#bottom-of-page) when done.")
- 
-        # COOCS
+        st.markdown("❗️ Click the 'Confirm selection' button when done.")
+    
+        # Your existing code for processing co-occurrences...
         all_coocs = []
-
-        # words we look for
         words = list(st.session_state.word_categories.keys())
         words_set = set(words)
-
-        # all docs as bows
         bows = []
+        
         for doc in st.session_state.corpus:
             doc = doc.split()
             doc = [s.translate(str.maketrans('', '', string.punctuation)) for s in doc]
@@ -334,66 +313,87 @@ def page_6():
             doc = list(set(doc))
             bows.append(doc)
         
-        # relevant words
         for bow in bows:
             bow = [t for t in bow if t in words]
             pairs = combinations(bow, 2) # or any other number than 
             for p in pairs:
                 all_coocs.append(p)
         
-        # normalise the pairs (disregard order in the tuple)
         norm_coocs = [tuple(sorted(pair)) for pair in all_coocs]
-        
-        # edgelist
         df = pd.DataFrame(norm_coocs, columns=['source', 'target'])
         
-        # apply the categorisation
         def map_to_category(word):
             category = st.session_state.word_categories.get(word, word)
             return word if category == "one-word" else category
+        
         df['source'] = df['source'].apply(map_to_category)
         df['target'] = df['target'].apply(map_to_category)
-       
-       
         df = df.groupby(['source', 'target']).size().reset_index(name='weight')
-        
-        # Remove pairs where the items in the pair are identical
         df = df[df['source'] != df['target']]
        
+        # Ensure 'df' is defined before using it in any buttons or functions
+        df = pd.DataFrame(norm_coocs, columns=['source', 'target'])
+        df['source'] = df['source'].apply(map_to_category)
+        df['target'] = df['target'].apply(map_to_category)
+        df = df.groupby(['source', 'target']).size().reset_index(name='weight')
+        df = df[df['source'] != df['target']]
+
+        # Define the confirm_selection function to use 'df'
+        def confirm_selection(df, selected_rows):
+            final_df = df.loc[selected_rows]
+            st.markdown("✅ Co-occurrences saved.")
+            st.markdown("← You can now *visualize the network*.")
+            st.session_state.edgelist = final_df
+
+        # Add a 'Confirm selection' button at the top of the page
+        if st.button("Confirm selection"):
+            selected_rows = [index for index, _ in df.iterrows() if st.session_state.get(f"checkbox_{index}", False)]
+            confirm_selection(df, selected_rows)
+
+
         def display_dataframe(df):
             selected_rows = []
             
-            # Create "Select All" and "Deselect All" buttons
-            select_all, deselect_all = st.columns(2)
+            col1, col2, _, col_threshold, col_button = st.columns([1, 1,1, 1, 2])
             
-            if select_all.button("Select All"):
-                for index, row in df.iterrows():
-                    st.session_state[f"checkbox_{index}"] = True
+            with col1:
+                if st.button("Select All"):
+                    for index, row in df.iterrows():
+                        st.session_state[f"checkbox_{index}"] = True
+            
+            with col2:
+                if st.button("Deselect All"):
+                    for index, row in df.iterrows():
+                        st.session_state[f"checkbox_{index}"] = False
+            
+            with col_threshold:
+                st.empty()  # This acts as a spacer if needed
+                threshold = st.number_input('Threshold weight', min_value=0, value = 5)
+            
+            with col_button:
+                st.write('<div style="margin-top: 29px;"></div>', unsafe_allow_html=True)
+                if st.button("Select all >= "):
+                    
+                    for index, row in df.iterrows():
+                        if row['weight'] >= threshold:
+                            st.session_state[f"checkbox_{index}"] = True
+            
+            st.markdown("&nbsp; &nbsp; &nbsp; &nbsp; source -- target (weight)")
 
-            if deselect_all.button("Deselect All"):
-                for index, row in df.iterrows():
-                    st.session_state[f"checkbox_{index}"] = False
-            
-            # Display the dataframe with checkboxes for each row
             for index, row in df.iterrows():
                 checkbox_key = f"checkbox_{index}"
-                # Ensure all pairs are selected by default
-                checkbox_state = st.session_state.get(checkbox_key, True)  # Default to checked
+                checkbox_state = st.session_state.get(checkbox_key, False)
                 is_selected = st.checkbox(f"{row['source']} -- {row['target']} ({row['weight']})", value=checkbox_state, key=checkbox_key)
                 if is_selected:
                     selected_rows.append(index)
             
-            # If the user clicks confirm, display the selected rows
-            if st.button("Confirm selection"):
-                final_df = df.loc[selected_rows]
-                st.markdown("✅ Co-occurrences saved.")
-                st.markdown("← You can now *visualize the network*.")
-                st.session_state.edgelist = final_df
 
+        
         display_dataframe(df)
-        st.markdown('<a name="bottom-of-page"></a>', unsafe_allow_html=True)
+        st.markdown("[🔼 Back to the top. Remember to click 'Confirm selection'](#top-of-page)")
     else:
         st.markdown("No concepts defined. Please make concepts.")
+
      
 
 def page_7():
@@ -401,14 +401,19 @@ def page_7():
 
 
         df = st.session_state.edgelist       
+        
+        # This version includes edge weight, and is the version of G that gets exported to GEXF
         G = nx.from_pandas_edgelist(df, 'source', 'target', ['weight'])
+
+        # This version excludes edge weight and is used for pyvis visualisations
+        G1 = nx.from_pandas_edgelist(df, 'source', 'target')
 
         # Create a Network object for visualization
         nt = Network(notebook=True, height="750px", bgcolor="black", font_color="white")
         
 
         # Pass the networkx graph object to it for the visualization
-        nt.from_nx(G)
+        nt.from_nx(G1)
 
 
         
@@ -416,9 +421,8 @@ def page_7():
         betweenness = nx.betweenness_centrality(G)
 
         # Normalize the betweenness values to determine node sizes for visualization
-        # Here, I'm scaling the values to lie between 10 and 50, but you can adjust this range as needed
-        min_size = 10
-        max_size = 50
+        min_size =5
+        max_size = 25
         min_betweenness = min(betweenness.values())
         max_betweenness = max(betweenness.values())
 
@@ -429,8 +433,6 @@ def page_7():
                 node: min_size + (value - min_betweenness) * (max_size - min_size) / (max_betweenness - min_betweenness) 
                 for node, value in betweenness.items()
             }
-
-
 
         # Configure node appearance
         for node in nt.nodes:
@@ -457,32 +459,25 @@ def page_7():
         },
         "physics": {
             "repulsion": {
-            "springLength": 250,
+            "springLength": 175,
             "avoidOverlap": 1.0
             },
-            "minVelocity": 0.05,
+            "minVelocity": 10,
             "maxVelocity": 32,
             "solver": "repulsion",
-            "timestep": 1.0
+            "timestep": 3.0
         }
         }
         """
 
-
-
-
-
-        
         nt.set_options(physics_options)
 
         # Save the visualization as an HTML file
-        #nt.show_buttons(filter_=['physics'])
         nt.save_graph("network.html")
 
         # Display the network visualization in Streamlit
         st.markdown("#### Graph preview")
         st.components.v1.html(nt.html, width=770, height=770)
-        
         
         st.markdown("🔴 Node size reflects betweenness centrality.")
         st.markdown("👆 Click and drag background to move graph.")
@@ -490,12 +485,11 @@ def page_7():
         st.markdown("⚡️ Click and drag individual node for rubberband effect.")
         st.markdown("***")
 
-
-       
         file_path = 'network.html'
         with open(file_path, 'r') as file:
             file_content = file.read()
-        # Create a download button for the HTML content
+        
+        # html download
         btn = st.download_button(
             label="Download HTML (advanced preview)",
             data=file_content,
@@ -503,10 +497,10 @@ def page_7():
             mime="text/html"
         )
 
-        # Save the graph to GEXF format
+        # save GEXF
         nx.write_gexf(G, "textometrica_graph.gexf")
 
-        # Display the download button in Streamlit
+        # gexf download
         with open("textometrica_graph.gexf", "rb") as f:
             btn = st.download_button(
                 label="Download GEXF for Gephi",
@@ -515,16 +509,10 @@ def page_7():
                 mime="application/xml"
             )
 
-
-
-    
-
     else:
         st.write("No co-occurrences available. Please go to 'View co-occurrences'.")
 
-
-
-# Main function to control page rendering
+#mMain function
 def main():
 
     # Sidebar for quick links to steps
