@@ -61,9 +61,10 @@ def page_1():
         st.session_state.corpus = corpus
 
 def page_2():
-    st.markdown("### Preprocess")
+    
  # Access corpus from session state
     if 'corpus' in st.session_state:
+        st.markdown("### Preprocess")
         st.write("Number of documents in the corpus:", len(st.session_state.corpus))
         
         available_languages = sorted(stopwords.fileids())
@@ -102,8 +103,9 @@ def page_2():
         st.write("Corpus is not available. Please upload a zip file.")
 
 def page_3():
-    st.markdown("### Set threshold")
+    
     if 'countsDF' in st.session_state:
+        st.markdown("### Set threshold")
         countsDF = st.session_state.countsDF
         countsDF = countsDF.drop('id', axis = 1).sort_values(by='DF', ascending = False).reset_index().drop('index', axis=1)
         st.markdown("This is a list of words, sorted by their *document frequencies* (i.e. how many documents they occur in, no matter how many times).")
@@ -129,9 +131,10 @@ def page_3():
         st.write("Preprocessed data not available. Please run preprocessing.")
 
 def page_4():
-    st.markdown("### Select words")
+    
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     if 'shortDF' in st.session_state:
+        st.markdown("### Select words")
         st.markdown("Now, refine your selection of words by manually going through this list. Select the words you want to keep in the analysis, and deselect those that you are not interested in.")
         st.markdown("Use the 🔎 button to inspect a word in its context.")
         st.markdown("❗️Click the 'Confirm selection' button when done.")
@@ -214,7 +217,7 @@ def page_4():
 
 def page_5():
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
-    st.markdown("### Make concepts")
+    
     
     snippet_length = 300  # Adjust for longer or shorter snippets
 
@@ -223,7 +226,7 @@ def page_5():
         st.session_state.word_categories = {}
 
     if 'shortDF' in st.session_state and 'keeplist' in st.session_state:
-
+        st.markdown("### Make concepts")
         st.markdown("This step offers the opportunity for thematic coding:")
         st.markdown("- Each word is initially set as a 'one-word' category. You can keep some — or all words — in that state.")
         st.markdown("- If you want to assign a word to a concept, e.g., <span style='color: hotpink; font-size: 18px'>sushi</span> to FOOD, enter FOOD in 'Add concept' and press Enter.", unsafe_allow_html = True)
@@ -302,14 +305,14 @@ def page_5():
         
 
     else:
-        st.write("No selected tokens available. Please select tokens first.")
+        st.write("No selected words available. Please select words first.")
 
 
 
 def page_6():
-    st.markdown("### View co-occurrences")
+    
     if 'word_categories' in st.session_state:
-
+        st.markdown("### View co-occurrences")
         st.write("These are your co-occurring pairs. Select which ones you want to keep.")
         st.markdown("❗️ Click the 'Confirm selection' button at the [bottom of the page](#bottom-of-page) when done.")
  
@@ -390,7 +393,7 @@ def page_6():
         display_dataframe(df)
         st.markdown('<a name="bottom-of-page"></a>', unsafe_allow_html=True)
     else:
-        pass
+        st.markdown("No concepts defined. Please make concepts.")
      
 
 def page_7():
@@ -420,7 +423,7 @@ def page_7():
         max_betweenness = max(betweenness.values())
 
         if max_betweenness == min_betweenness:  # All nodes have the same betweenness centrality
-            scaled_betweenness = {node: 8 for node in betweenness}
+            scaled_betweenness = {node: 2 for node in betweenness}
         else:
             scaled_betweenness = {
                 node: min_size + (value - min_betweenness) * (max_size - min_size) / (max_betweenness - min_betweenness) 
@@ -437,24 +440,51 @@ def page_7():
             node_id = node['id']
             node['size'] = scaled_betweenness[node_id]
 
-        # Adjust edge width based on the edge weights
-        weights_list = []
-        for (source, target, weight) in G.edges(data=True):
-            weights_list.append(weight)
-          
-        for idx, edge_data in enumerate(nt.edges):  
-            edge_data['value'] = weights_list[idx]
+        # Set the physics options for the network using set_options
+
+
+        physics_options = """
+        var options = {
+        "configure": {
+                "enabled": true,
+                "filter": ["physics"]
+        },
+        "edges": {
+            "color": {
+            "inherit": true
+            },
+            "smooth": false
+        },
+        "physics": {
+            "repulsion": {
+            "springLength": 250,
+            "avoidOverlap": 1.0
+            },
+            "minVelocity": 0.05,
+            "maxVelocity": 32,
+            "solver": "repulsion",
+            "timestep": 1.0
+        }
+        }
+        """
+
+
+
+
+
+        
+        nt.set_options(physics_options)
 
         # Save the visualization as an HTML file
-        nt.show_buttons(filter_=['physics'])
+        #nt.show_buttons(filter_=['physics'])
         nt.save_graph("network.html")
-        
 
         # Display the network visualization in Streamlit
         st.markdown("#### Graph preview")
-        st.components.v1.html(nt.html, width=600, height=600)
+        st.components.v1.html(nt.html, width=770, height=770)
+        
+        
         st.markdown("🔴 Node size reflects betweenness centrality.")
-        st.markdown("🔌 Edge width reflects co-occurrence weight.")
         st.markdown("👆 Click and drag background to move graph.")
         st.markdown("👀 Two-finger up/down swipe (trackpad), or mousewheel, for zoom.")
         st.markdown("⚡️ Click and drag individual node for rubberband effect.")
