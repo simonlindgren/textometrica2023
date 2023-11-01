@@ -8,4 +8,4 @@ If you use this approach, conceived as CCA (Connected Concept Analysis), please 
 
 > Lindgren, S. (2016). \"Introducing Connected Concept Analysis\". *Text & Talk*, 36(3), 341–362 [[doi](https://doi.org/10.1515/text-2016-0016)]
 
-See this code deployed at [https://textometrica.streamlit.app/](https://textometrica.streamlit.app/).
+Run the app at [https://textometrica.streamlit.app/](https://textometrica.streamlit.app/).
