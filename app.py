@@ -316,7 +316,6 @@ def page_5():
         if st.button("Submit concepts"):
             st.write("✅ Concepts submitted!")
             st.write("← You can now *View co-occurrences*.")
-            st.write(st.session_state.word_categories)
         
         st.markdown("***")
 
