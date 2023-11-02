@@ -11,7 +11,7 @@ If you use this approach, conceived as CCA (Connected Concept Analysis), please 
 
 ### Run the app on Streamlit Community Cloud
 
-Go to [https://textometrica.streamlit.app/](https://textometrica.streamlit.app)
+Go to [https://textometrica.streamlit.app](https://textometrica.streamlit.app)
 
 
 ### ... or run it locally on your computer

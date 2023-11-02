@@ -137,11 +137,10 @@ def page_3():
     else:
         st.write("Preprocessed data not available. Please run preprocessing.")
 
-
-
 def page_4():
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     if 'shortDF' in st.session_state:
+        st.write(st.session_state.shortDF.head())
         st.markdown("### Select words")
         st.markdown("Now, refine your selection of words by manually going through this list. Select the words you want to keep in the analysis, and deselect those that you are not interested in.")
         st.markdown("Use the 🔎 button to inspect a word in its context.")
@@ -173,34 +172,54 @@ def page_4():
 
         st.markdown("***")
         st.markdown("<span style='color: hotpink; font-size: 16pt'>2.</span>", unsafe_allow_html=True)
-        st.markdown("This function allows you to select individual words.")
+        st.markdown("This function allows for manual selection of words. Set a threshold again, *and/or* make manual selections.")
         
+        colX, colZ, spaceM, colA, colB, colD = st.columns([1,3,1,2,2,3])
+        threshold = 0
+        threshold = colX.text_input('', int(len(st.session_state.shortDF)/3))
+        threshold = int(threshold)
 
-        # Create columns for layout
-        col1, col2, space1, space2, col4 = st.columns([2,2,1,1,2])
+        colZ.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
+        colA.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
+        colB.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
+        colD.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
 
-        if col1.button("Select All"):
+        if colZ.button('Select > threshold'):
+            # Update the checkbox_states based on the threshold for values above
+            for word in tokenlist:
+                docfreq = st.session_state.shortDF[st.session_state.shortDF.word == word].DF.iloc[0]
+                st.session_state.checkbox_states[word] = docfreq > threshold
+
+        if colA.button("Select All"):
             for w in tokenlist:
                 st.session_state.checkbox_states[w] = True
         
-        if col2.button("Deselect All"):
+        if colB.button("Deselect All"):
             for w in tokenlist:
                 st.session_state.checkbox_states[w] = False
 
-        if col4.button("Confirm selection"):
+        if colD.button("Confirm selection"):
             # Create finalDF from the session_state.keeplist
             finalDF = st.session_state.shortDF[st.session_state.shortDF['word'].isin(st.session_state.keeplist)]
             st.write(f"✅ Keeping {len(st.session_state.keeplist)} words.")
             st.write("← You can now move on to *Make concepts*.")
             st.write("***")
 
+        col1, col2, col3 = st.columns(3)
+        col1.markdown("<span style='color: hotpink;'>WORD</span>", unsafe_allow_html=True)
+        col2.markdown("<span style='color: hotpink;'>DF</span>", unsafe_allow_html=True)
+        col3.markdown("<span style='color: hotpink;'></span>", unsafe_allow_html=True)
+
         for word in tokenlist:
-            col1, col2 = st.columns(2)
+            col1, col3, col2 = st.columns(3)
             
             # Update checkbox states based on session state
             is_checked = col1.checkbox(word, value=st.session_state.checkbox_states[word])
             st.session_state.checkbox_states[word] = is_checked
-
+            
+            docfreq = st.session_state.shortDF[st.session_state.shortDF.word == word]
+            col3.write(list(docfreq.DF)[0])
+            
             # Update keeplist in session state
             if is_checked and word not in st.session_state.keeplist:
                 st.session_state.keeplist.append(word)
@@ -211,7 +230,7 @@ def page_4():
             if col2.button(f"🔍 {word}"):
                 st.session_state.show_snippet[word] = not st.session_state.show_snippet[word]
 
-            if st.session_state.show_snippet[word]:
+            if st.session_state.show_snippet[word]:           
                 word_pattern = re.compile(r'\b' + word + r'\b')  # Ensuring word boundaries
                 
                 for doc in st.session_state.corpus:
@@ -219,16 +238,13 @@ def page_4():
                     matches = [m.start() for m in word_pattern.finditer(doc)]
                     
                     for start_index in matches:
-                        start = max(0, start_index - snippet_length)
-                        end = min(len(doc), start_index + len(word) + snippet_length)
-                        snippet = doc[start:end]
-
-                        # highlight the word in orange
-                        snippet = re.sub(word_pattern, f"<span style='color: orange;'>{word}</span>", snippet)
-
-                        # snippet box styling
-                        with st.container():
-                            st.markdown(f"<div style='padding: 10px; border: 1px solid gray; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
+                       start = max(0, start_index - snippet_length)
+                       end = min(len(doc), start_index + len(word) + snippet_length)
+                       snippet = doc[start:end]
+                       
+                       snippet = re.sub(word_pattern, f"<span style='color: orange;'>{word}</span>", snippet)
+                       with st.container():
+                           st.markdown(f"<div style='padding: 10px; border: 1px solid gray; border-radius: 5px; margin: 5px 0;'>...{snippet}...</div>", unsafe_allow_html=True)
 
         st.markdown('<a name="bottom-of-page"></a>', unsafe_allow_html=True)
         st.markdown("[🔼 Back to the top. Remember to click 'Confirm selection'](#top-of-page)")
@@ -556,7 +572,7 @@ def page_7():
             "avoidOverlap": 1.0
             },
             "minVelocity": 10,
-            "maxVelocity": 32,
+            "maxVelocity": 19,
             "solver": "repulsion",
             "timestep": 3.0
         }
