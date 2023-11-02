@@ -312,7 +312,7 @@ def page_5():
         st.markdown("- If you want to assign a word to a concept, e.g., <span style='color: hotpink; font-size: 18px'>sushi</span> to FOOD, enter FOOD in 'Add concept' and press Enter.", unsafe_allow_html = True)
         st.markdown("- Go through all words in this way. (a) Keep it as a one-word concept; (b) Add a new concept to connect it to; or, (c) Connect it to an already created concept, using the 'Conneced concept' dropdown menu.")
      
-
+        st.markdown("***")
         if st.button("Submit concepts"):
             st.write("✅ Concepts submitted!")
             st.write("← You can now *View co-occurrences*.")

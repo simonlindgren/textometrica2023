@@ -8,4 +8,18 @@ If you use this approach, conceived as CCA (Connected Concept Analysis), please 
 
 > Lindgren, S. (2016). \"Introducing Connected Concept Analysis\". *Text & Talk*, 36(3), 341–362 [[doi](https://doi.org/10.1515/text-2016-0016)]
 
+
+### Run the app on Streamlit Community Cloud
+
 Run the app at [https://textometrica.streamlit.app/](https://textometrica.streamlit.app/).
+
+
+### ... or run it locally on your computer
+
+- Clone this repository.
+- Make sure you have streamlit installed (`pip install streamlit`).
+- Run `pip install -r requirements.txt`
+- Run `streamlit run app.py`
+
+
+
