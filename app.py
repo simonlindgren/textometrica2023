@@ -140,7 +140,6 @@ def page_3():
 def page_4():
     st.markdown('<a name="top-of-page"></a>', unsafe_allow_html=True)
     if 'shortDF' in st.session_state:
-        st.write(st.session_state.shortDF.head())
         st.markdown("### Select words")
         st.markdown("Now, refine your selection of words by manually going through this list. Select the words you want to keep in the analysis, and deselect those that you are not interested in.")
         st.markdown("Use the 🔎 button to inspect a word in its context.")
@@ -460,41 +459,52 @@ def page_6():
             confirm_selection(df, selected_rows)
 
 
+        for index, _ in df.iterrows():
+            if f"checkbox_{index}" not in st.session_state:
+                st.session_state[f"checkbox_{index}"] = False  # Default value for new checkboxes
+
+
+
         def display_dataframe(df):
             selected_rows = []
             
             col1, col2, _, col_threshold, col_button = st.columns([1, 1,1, 1, 2])
             
+            # Manage the "Select All" and "Deselect All" functionality with session state
             with col1:
                 if st.button("Select All"):
-                    for index, row in df.iterrows():
+                    for index, _ in df.iterrows():
                         st.session_state[f"checkbox_{index}"] = True
             
             with col2:
                 if st.button("Deselect All"):
-                    for index, row in df.iterrows():
+                    for index, _ in df.iterrows():
                         st.session_state[f"checkbox_{index}"] = False
             
             with col_threshold:
                 st.empty()  # This acts as a spacer if needed
-                threshold = st.number_input('Threshold weight', min_value=0, value = 5)
+                threshold = st.number_input('Threshold weight', min_value=0, value=5)
             
             with col_button:
                 st.write('<div style="margin-top: 29px;"></div>', unsafe_allow_html=True)
                 if st.button("Select all >= "):
-                    
                     for index, row in df.iterrows():
-                        if row['weight'] >= threshold:
-                            st.session_state[f"checkbox_{index}"] = True
+                        st.session_state[f"checkbox_{index}"] = row['weight'] >= threshold
             
             st.markdown("&nbsp; &nbsp; &nbsp; &nbsp; source -- target (weight)")
 
+            # Create the checkboxes
             for index, row in df.iterrows():
                 checkbox_key = f"checkbox_{index}"
-                checkbox_state = st.session_state.get(checkbox_key, False)
-                is_selected = st.checkbox(f"{row['source']} -- {row['target']} ({row['weight']})", value=checkbox_state, key=checkbox_key)
+                # Initialize the checkbox state in the session if not already present
+                if checkbox_key not in st.session_state:
+                    st.session_state[checkbox_key] = False
+                # Create the checkbox and use the session state as the source of truth
+                is_selected = st.checkbox(f"{row['source']} -- {row['target']} ({row['weight']})", value=st.session_state[checkbox_key], key=checkbox_key)
+                # Update the list of selected rows based on the checkbox state
                 if is_selected:
                     selected_rows.append(index)
+ 
             
 
         
