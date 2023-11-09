@@ -573,8 +573,6 @@ def page_7():
         # Pass the networkx graph object to it for the visualization
         nt.from_nx(G1)
 
-
-        
         # Compute betweenness centrality for each node in the NetworkX graph
         betweenness = nx.betweenness_centrality(G)
 
@@ -601,7 +599,6 @@ def page_7():
             node['size'] = scaled_betweenness[node_id]
 
         # Set the physics options for the network using set_options
-
 
         physics_options = """
         var options = {
@@ -670,10 +667,10 @@ def page_7():
     else:
         st.write("No co-occurrences available. Please go to 'View co-occurrences'.")
 
-#mMain function
+# main function
 def main():
 
-    # Sidebar for quick links to steps
+    # sidebar for quick links to steps
     st.sidebar.image('logo.png')
     st.sidebar.markdown("")
     st.sidebar.markdown("")
@@ -720,5 +717,5 @@ def main():
     
 if __name__ == "__main__":
     if "page" not in st.session_state:
-        st.session_state.page = 0  # Default to the start page
+        st.session_state.page = 0  # default to the start page
     main()
