@@ -15,7 +15,7 @@ import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 
-# Start page
+# start page
 def start_page():
     st.image('logo.png')
     st.markdown('***')
@@ -32,7 +32,7 @@ def start_page():
             mime="application/zip"
         )
 
-# Define all other pages
+# define all other pages
 def page_1(): 
     st.markdown("### Upload data")
     uploaded_file = st.file_uploader("", type='zip')
@@ -55,11 +55,11 @@ def page_1():
         st.markdown("  The next step is *Preprocess*.")
        
         
-        # Save corpus to session state
+        # save corpus to session state
         st.session_state.corpus = corpus
 
 def page_2(): 
-# Access corpus from session state
+# access corpus from session state
     if 'corpus' in st.session_state:
         st.markdown("### Preprocess")
         st.write("Number of documents in the corpus:", len(st.session_state.corpus))
@@ -91,7 +91,7 @@ def page_2():
             docfreqs = list(np.squeeze(np.asarray((dtm != 0).sum(0))))  # count number of non-zero document occurrences for each row (i.e. each word)
             countsDF = pd.DataFrame(zip(wordlist, docfreqs)).reset_index()
             countsDF.columns = ["id", "word", "DF"]
-            # Save df to session state
+            # save df to session state
             st.session_state.countsDF = countsDF
             st.markdown("✅ Preprocessing done.")
             st.markdown("← You can now *Set threshold*.")
@@ -118,7 +118,7 @@ def page_3():
                     st.write(f"✅ Keeping all words above row {threshold}.")
                     st.write("← You can now move on to *Select words*.")
                     shortDF = st.session_state.countsDF.sort_values(by="DF", ascending=False).head(threshold)
-                    # Save shortDF to session state
+                    # save shortDF to session state
                     st.session_state.shortDF = shortDF
                 else:
                     st.write(f"Please enter a number between 1 and {len(st.session_state.countsDF)}")
@@ -148,13 +148,13 @@ def page_4():
 
         tokenlist = list(st.session_state.shortDF.word)
 
-        # Dictionary to hold the state of each checkbox and snippet display
+        # dictionary to hold the state of each checkbox and snippet display
         if "checkbox_states" not in st.session_state:
             st.session_state.checkbox_states = {word: False for word in tokenlist}
         if "show_snippet" not in st.session_state:
             st.session_state.show_snippet = {word: False for word in tokenlist}
 
-        # Initialize keeplist in session state if not present
+        # initialize keeplist in session state if not present
         if 'keeplist' not in st.session_state:
             st.session_state.keeplist = []
 
@@ -172,6 +172,7 @@ def page_4():
         st.markdown("***")
         st.markdown("<span style='color: hotpink; font-size: 16pt'>2.</span>", unsafe_allow_html=True)
         st.markdown("This function allows for manual selection of words. Set a threshold again, *and/or* make manual selections.")
+        st.markdown("← Once you have *confirmed your selection*, move on to *Make concepts*.")
         
         colX, colZ, spaceM, colA, colB, colD = st.columns([1,3,1,2,2,3])
         threshold = 0
@@ -184,7 +185,7 @@ def page_4():
         colD.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
 
         if colZ.button('Select > threshold'):
-            # Update the checkbox_states based on the threshold for values above
+            # update the checkbox_states based on the threshold for values above
             for word in tokenlist:
                 docfreq = st.session_state.shortDF[st.session_state.shortDF.word == word].DF.iloc[0]
                 st.session_state.checkbox_states[word] = docfreq > threshold
@@ -200,9 +201,24 @@ def page_4():
         if colD.button("Confirm selection"):
             # Create finalDF from the session_state.keeplist
             finalDF = st.session_state.shortDF[st.session_state.shortDF['word'].isin(st.session_state.keeplist)]
+            
+            # word file for download           
+            kept_words = list(finalDF.word)
+            with open('word_selection.txt', 'w') as outfile:
+                outfile.write('\n'.join(w.strip() for w in kept_words))
+                                  
+            with open("word_selection.txt", 'rb') as f:
+                st.download_button(
+                    label="Download your selection",
+                    data=f,
+                    file_name="word_selection.txt",
+                    mime = 'text/plain'
+                )
+
             st.write(f"✅ Keeping {len(st.session_state.keeplist)} words.")
             st.write("← You can now move on to *Make concepts*.")
-            st.write("***")
+        
+        st.write("***")
 
         col1, col2, col3 = st.columns(3)
         col1.markdown("<span style='color: hotpink;'>WORD</span>", unsafe_allow_html=True)
@@ -264,8 +280,16 @@ def page_5():
     # initialize word_categories in session state if it doesn't exist
     if 'word_categories' not in st.session_state:
         st.session_state.word_categories = {}
-    
-    
+
+
+    # Add a function to generate CSV from the word_categories dictionary
+    def generate_csv(word_categories):
+        # Convert the dictionary to a DataFrame
+        df = pd.DataFrame(list(word_categories.items()), columns=['WORD', 'CONCEPT'])
+        # Convert DataFrame to CSV
+        return df.to_csv(index=False).encode('utf-8')
+
+
 
     if 'shortDF' in st.session_state and 'keeplist' in st.session_state:
         st.markdown("### Make concepts")
@@ -328,9 +352,24 @@ def page_5():
         st.markdown("- Go through all words in this way. (a) Keep it as a one-word concept; (b) Add a new concept to connect it to; or, (c) Connect it to an already created concept, using the 'Conneced concept' dropdown menu.")
      
         st.markdown("***")
+
+        st.markdown("← Once you have *submitted your concepts*, move on to *View co-occurrences*.")
+
         if st.button("Submit concepts"):
+            st.session_state.final_concepts_submitted = True
             st.write("✅ Concepts submitted!")
             st.write("← You can now *View co-occurrences*.")
+
+
+        if st.session_state.get('final_concepts_submitted', False):
+            final_csv = generate_csv(st.session_state.word_categories)
+            st.download_button(
+                label="Download word-concept pairs",
+                data=final_csv,
+                file_name="word_concept_pairs.csv",
+                mime='text/csv',
+            )
+
         
         st.markdown("***")
 
