@@ -29,7 +29,7 @@ $ sudo docker run -p 8501:8501 textometrica
 You can now view your Streamlit app in your browser.
 URL: http://0.0.0.0:8501
 ```
-- Go to `http://<ip-where-you-ran-the-docker-image>:8501``
+- Go to `http://<ip-where-you-ran-the-docker-image>:8501`
 
 Or manually:
 
