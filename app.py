@@ -12,7 +12,10 @@ import networkx as nx
 from pyvis.network import Network
 
 import nltk
-nltk.download('stopwords')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 # start page
@@ -176,7 +179,7 @@ def page_4():
         
         colX, colZ, spaceM, colA, colB, colD = st.columns([1,3,1,2,2,3])
         threshold = 0
-        threshold = colX.text_input('', int(len(st.session_state.shortDF)/3))
+        threshold = colX.text_input('', int(10))
         threshold = int(threshold)
 
         colZ.write('<style>div.row-widget.stButton > button:first-child { margin-top: 14px; }</style>', unsafe_allow_html=True)
@@ -349,7 +352,7 @@ def page_5():
         st.markdown("Use the list ow words below to do line-by-line concept assigment:")
         st.markdown("- Each word is initially set as a 'one-word' category. You can keep some — or all words — in that state.")
         st.markdown("- If you want to assign a word to a concept, e.g., <span style='color: hotpink; font-size: 18px'>sushi</span> to FOOD, enter FOOD in 'Add concept' and press Enter.", unsafe_allow_html = True)
-        st.markdown("- Go through all words in this way. (a) Keep it as a one-word concept; (b) Add a new concept to connect it to; or, (c) Connect it to an already created concept, using the 'Conneced concept' dropdown menu.")
+        st.markdown("- Go through all words in this way. (a) Keep it as a one-word concept; (b) Add a new concept to connect it to; or, (c) Connect it to an already created concept, using the 'Connected concept' dropdown menu.")
      
         st.markdown("***")
 
@@ -498,11 +501,11 @@ def page_6():
             confirm_selection(df, selected_rows)
 
 
-        for index, _ in df.iterrows():
-            if f"checkbox_{index}" not in st.session_state:
-                st.session_state[f"checkbox_{index}"] = False  # Default value for new checkboxes
-
-
+        #for index, _ in df.iterrows():
+        #    if f"checkbox_{index}" not in st.session_state:
+        #        st.session_state[f"checkbox_{index}"] = False  # Default value for new checkboxes
+            
+            
 
         def display_dataframe(df):
             selected_rows = []
@@ -533,18 +536,23 @@ def page_6():
             st.markdown("&nbsp; &nbsp; &nbsp; &nbsp; source -- target (weight)")
 
             # Create the checkboxes
+            df = df.sort_values('weight', ascending=False) #sort descending by weight before displaying
             for index, row in df.iterrows():
                 checkbox_key = f"checkbox_{index}"
                 # Initialize the checkbox state in the session if not already present
                 if checkbox_key not in st.session_state:
                     st.session_state[checkbox_key] = False
-                # Create the checkbox and use the session state as the source of truth
-                is_selected = st.checkbox(f"{row['source']} -- {row['target']} ({row['weight']})", value=st.session_state[checkbox_key], key=checkbox_key)
-                # Update the list of selected rows based on the checkbox state
-                if is_selected:
-                    selected_rows.append(index)
- 
-            
+                # Create the label for the checkbox
+                label = f"{row['source']} -- {row['target']} ({row['weight']})"
+                # Check if the label is empty
+                if label.strip() != "":
+                    # If the label is not empty, create the checkbox
+                    is_selected = st.checkbox(label, key=checkbox_key)
+                    # Update the list of selected rows based on the checkbox state
+                    if is_selected:
+                        selected_rows.append(index)
+                        
+                        
 
         
         display_dataframe(df)
