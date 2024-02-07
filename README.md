@@ -16,7 +16,16 @@ Go to [https://textometrica.streamlit.app](https://textometrica.streamlit.app)
 
 ### ... or run it locally on your computer
 
-With docker:
+Manually:
+
+- Clone this repository.
+- Make sure you have streamlit installed (`pip install streamlit`).
+- Run `pip install -r requirements.txt`
+- Run `streamlit run app.py`
+
+
+
+... or with docker:
 
 - With docker installed, clone and cd into repository.
 - Then:
@@ -30,13 +39,3 @@ You can now view your Streamlit app in your browser.
 URL: http://0.0.0.0:8501
 ```
 - Go to `http://<ip-where-you-ran-the-docker-image>:8501`
-
-Or manually:
-
-- Clone this repository.
-- Make sure you have streamlit installed (`pip install streamlit`).
-- Run `pip install -r requirements.txt`
-- Run `streamlit run app.py`
-
-
-
