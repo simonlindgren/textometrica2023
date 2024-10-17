@@ -2,4 +2,4 @@ scikit-learn==1.0.2
 nltk
 networkx
 pyvis
-
+numpy==1.21.5
