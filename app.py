@@ -90,7 +90,7 @@ def page_2():
                                 token_pattern="[a-zA-Z][a-zA-Z]+")  # at least two letters, and no numerical or special characters
             dtm = cv.fit_transform(st.session_state.corpus)
             progress.progress(1.0)
-            wordlist = cv.get_feature_names()
+            wordlist = cv.get_feature_names_out()
             docfreqs = list(np.squeeze(np.asarray((dtm != 0).sum(0))))  # count number of non-zero document occurrences for each row (i.e. each word)
             countsDF = pd.DataFrame(zip(wordlist, docfreqs)).reset_index()
             countsDF.columns = ["id", "word", "DF"]
